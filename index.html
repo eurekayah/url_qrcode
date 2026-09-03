@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code 產生器</title>
+    <!-- 引入 QRCode.js 函式庫 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        /* 1. 視覺風格設定 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            background-color: #000000;
+            color: #39FF14;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            letter-spacing: 5px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px #39FF14;
+        }
+
+        /* 2. 輸入區樣式 */
+        .input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 40px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        input {
+            flex: 1;
+            background: transparent;
+            border: 1px solid #39FF14;
+            color: #39FF14;
+            padding: 12px;
+            font-family: inherit;
+            outline: none;
+            border-radius: 4px;
+        }
+
+        input::placeholder {
+            color: rgba(57, 255, 20, 0.3);
+        }
+
+        button {
+            background: #39FF14;
+            color: #000;
+            border: none;
+            padding: 0 20px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            box-shadow: 0 0 20px #39FF14;
+        }
+
+        /* 3. QR Code 顯示區 */
+        #qrcode-container {
+            padding: 20px;
+            background-color: #ffffff; /* QR Code 需要白色背景才好掃描 */
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(57, 255, 20, 0.4);
+            display: none; /* 初始隱藏 */
+        }
+
+        .hint {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>QR_GENERATOR_v1.0</h1>
+
+    <div class="input-container">
+        <input type="text" id="url-input" placeholder="請貼上網址 (https://...)">
+        <button onclick="generateQR()">GENERATE</button>
+    </div>
+
+    <!-- QR Code 渲染區域 -->
+    <div id="qrcode-container"></div>
+
+    <div class="hint" id="hint-text">READY_TO_ENCODE</div>
+
+    <script>
+        const qrcodeContainer = document.getElementById('qrcode-container');
+        const urlInput = document.getElementById('url-input');
+        const hintText = document.getElementById('hint-text');
+        
+        // 初始化 QRCode 物件
+        let qr = null;
+
+        function generateQR() {
+            const url = urlInput.value.trim();
+
+            if (!url) {
+                alert("請輸入有效的網址");
+                return;
+            }
+
+            // 清空舊的內容
+            qrcodeContainer.innerHTML = '';
+            qrcodeContainer.style.display = 'block';
+            hintText.textContent = "ENCODING_SUCCESS";
+
+            // 產生新的 QR Code
+            qr = new QRCode(qrcodeContainer, {
+                text: url,
+                width: 200,
+                height: 200,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        }
+
+        // 支援按 Enter 鍵生成
+        urlInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') generateQR();
+        });
+    </script>
+</body>
+</html>
